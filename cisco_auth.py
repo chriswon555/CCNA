@@ -12,16 +12,10 @@ DNA_CENTER = {
 }
 
 def get_auth_token():
-    # Endpoint URL
     endpoint = '/dna/system/api/v1/auth/token'
     url = 'https://' + DNA_CENTER['host'] + endpoint
-    # Make the POST Request
     resp = requests.post(url, auth=HTTPBasicAuth(DNA_CENTER['username'], DNA_CENTER['password']), verify=False)
-    # Retrieve the Token from the returned JSON
     token = resp.json()['Token']
-    # Print out the Token
-    print("Token Retrieved: {}".format(token))
-    # Create a return statement to send the token back for later use
     return token
 
 def get_device_list():
