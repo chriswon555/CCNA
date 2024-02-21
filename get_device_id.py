@@ -1,6 +1,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 from auth import get_auth_token
+from icecream import ic
 
 requests.packages.urllib3.disable_warnings()
 
@@ -22,6 +23,7 @@ def get_device_id(device_json):
         print("Fetching Interfaces for Device Id ----> {}".format(device['id']))
         print('\n')
         get_device_int(device['id'])
+        get_device_summary(device['id'])
         print('\n')
 
 
@@ -50,6 +52,12 @@ def print_interface_info(interface_info):
                      str(int['status']),
                      str(int['lastUpdated'])))
 
+def get_device_summary(device_id):
+    url = f"https://sandboxdnac.cisco.com/api/v1/network-device/{device_id}/brief"
+    hdr = {'x-auth-token': token, 'content-type': 'application/json'}
+    resp = requests.get(url, headers=hdr, verify=False) # Make the Get Request
+    device_summary = resp.json()
+    ic(device_summary)
 
 if __name__ == "__main__":
     get_device_list()
