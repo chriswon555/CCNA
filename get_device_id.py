@@ -2,6 +2,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from auth import get_auth_token
 from icecream import ic
+import json
 
 requests.packages.urllib3.disable_warnings()
 
@@ -19,12 +20,17 @@ def get_device_list():
 
 
 def get_device_id(device_json):
+    last_digit = 100
     for device in device_json['response']: # Loop through Device List and Retrieve DeviceId
         print("Fetching Interfaces for Device Id ----> {}".format(device['id']))
         print('\n')
         get_device_int(device['id'])
+        
         get_device_summary(device['id'])
+        ip = f'10.0.0.{last_digit}'
+        set_management_ip(device['id'],ip)
         print('\n')
+        last_digit += 1
 
 
 def get_device_int(device_id):
@@ -56,6 +62,14 @@ def get_device_summary(device_id):
     url = f"https://sandboxdnac.cisco.com/api/v1/network-device/{device_id}/brief"
     hdr = {'x-auth-token': token, 'content-type': 'application/json'}
     resp = requests.get(url, headers=hdr, verify=False) # Make the Get Request
+    device_summary = resp.json()
+    ic(device_summary)
+
+def set_management_ip(device_id,ip):
+    url = f"https://sandboxdnac.cisco.com/api/v1/network-device/{device_id}/management-address"
+    body = json.dumps({"newIP": ip})
+    hdr = {'x-auth-token': token, 'content-type': 'application/json'}
+    resp = requests.request('PUT', url, headers=hdr, data=body, verify=False) # Make the Get Request
     device_summary = resp.json()
     ic(device_summary)
 
