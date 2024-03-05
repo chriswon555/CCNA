@@ -73,5 +73,13 @@ def set_management_ip(device_id,ip):
     device_summary = resp.json()
     ic(device_summary)
 
+def get_ospf_interfaces():
+    url = "https://sandboxdnac.cisco.com/api/v1/interface/ospf"
+    hdr = {'x-auth-token': token, 'content-type': 'application/json'}
+    resp = requests.request('GET', url, headers=hdr, verify=False) # Make the Get Request
+    interfaces = resp.json()
+    ic(interfaces)
+
 if __name__ == "__main__":
     get_device_list()
+    get_ospf_interfaces()
